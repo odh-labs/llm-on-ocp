@@ -1,0 +1,29 @@
+apiVersion: kfdef.apps.kubeflow.org/v1
+kind: KfDef
+metadata:
+  name: rhods-dashboard
+  namespace: redhat-ods-applications
+  finalizers:
+    - kfdef-finalizer.kfdef.apps.kubeflow.org
+spec:
+  applications:
+    - kustomizeConfig:
+        repoRef:
+          name: manifests
+          path: odh-common
+      name: odh-common
+    - kustomizeConfig:
+        overlays:
+          - rhods
+        parameters:
+          - name: odh-dashboard-image
+            value: '${RELATED_IMAGE_ODH_DASHBOARD_IMAGE}'
+        repoRef:
+          name: manifests
+          path: odh-dashboard
+      name: odh-dashboard
+  repos:
+    - name: manifests
+      uri: 'file:///opt/manifests/odh-manifests.tar.gz'
+  version: v1.0.0
+
