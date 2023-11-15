@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis-stack-server
+  name: redis-stack-server
+  namespace: redis
+spec:
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: db
+      nodePort: 32232
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    app: redis-stack-server
+  sessionAffinity: None
+  type: NodePort

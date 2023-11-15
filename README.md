@@ -1,12 +1,12 @@
 # Large Language Model (LLM) on OpenShift
 
-The intent of this repository is to automate the deployment of an LLM and its supporting components on OpenShift
+The intent of this repository is to automate the deployment of a large language model and its supporting components on OpenShift.
 
 ## Prerequisites
 
 This process assumes you already have an OpenShift 4.12+ running with cluster admin permissions.
 
-You will also need the OpenShift client (oc) and Helm.
+You will also need the OpenShift client `oc` and `helm`.
 
 ## Step 1 - Install OpenShift GitOps
 
@@ -92,7 +92,7 @@ cat << EOF | oc apply --filename -
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: edge-robotics-pipeline
+  name: llm-on-ocp
   namespace: openshift-gitops
 spec:
   goTemplate: true
