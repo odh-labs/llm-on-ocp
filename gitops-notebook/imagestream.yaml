@@ -1,0 +1,30 @@
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    internal.config.kubernetes.io/previousKinds: ImageStream
+    opendatahub.io/notebook-image-desc: Jupyter notebook image with custom llm libraries.
+    opendatahub.io/notebook-image-name: Custom LLM Image
+    opendatahub.io/notebook-image-order: "100"
+  labels:
+    app.kubernetes.io/part-of: workbenches
+    app.opendatahub.io/workbenches: "true"
+    component.opendatahub.io/name: jupyterhub
+    opendatahub.io/component: "true"
+    opendatahub.io/notebook-image: "true"
+  name: custom-llm-image
+  namespace: redhat-ods-applications
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - from:
+        kind: DockerImage
+        name: quay.io/opendatahub-contrib/workbench-images:cuda-jupyter-langchain-c9s-py311_2023c_latest
+      generation: 2
+      importPolicy:
+        importMode: Legacy
+      name: "1.2"
+      referencePolicy:
+        type: Source
