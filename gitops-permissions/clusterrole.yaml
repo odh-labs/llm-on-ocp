@@ -10,3 +10,6 @@ rules:
   - apiGroups: ["image.openshift.io"]
     resources: ["*"]
     verbs: ["*"]
+  - apiGroups: ["kubeflow.org"]
+    resources: ["notebooks"]
+    verbs: ["*"]
