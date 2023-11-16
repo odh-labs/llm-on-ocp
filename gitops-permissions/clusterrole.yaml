@@ -7,3 +7,6 @@ rules:
   - apiGroups: ["datasciencecluster.opendatahub.io"]
     resources: ["*"]
     verbs: ["*"]
+  - apiGroups: ["image.openshift.io"]
+    resources: ["*"]
+    verbs: ["*"]
