@@ -1,32 +1,35 @@
-# Large Language Model (LLM) on OpenShift
+* Large Language Model (LLM) on OpenShift
 
 The intent of this repository is to automate the deployment of a large language model and its supporting components on OpenShift.
 
-## Prerequisites
+** Prerequisites
 
 This process assumes you already have an OpenShift 4.12+ running with cluster admin permissions.
 
-You will also need the OpenShift client `oc` and `helm`.
+You will also need the OpenShift client ~oc~.
 
-## Step 1 - Install OpenShift GitOps
 
-The goal of this setup process is to be as declarative as possible. With this in mind our first step on the new cluster will be to install the [OpenShift Gitops](https://www.redhat.com/en/technologies/cloud-computing/openshift/gitops) operator and create an instance of [ArgoCD](https://argoproj.github.io/cd/) via the operator, so that all remaining steps can be performed in a GitOps manner.
+** Step 1 - Install OpenShift GitOps
 
-### Login to the cluster
+The goal of this setup process is to be as declarative as possible. With this in mind our first step on the new cluster will be to install the [[https://www.redhat.com/en/technologies/cloud-computing/openshift/gitops][OpenShift GitOps]] operator and create an instance of [[https://argoproj.github.io/cd][ArgoCD]] via the operator, so that all remaining steps can be performed in a GitOps manner.
+
+
+*** Login to the cluster
 
 Before we can run any of the following commands, we need to ensure we are logged in. Run the following to do so, updating the placeholder values:
 
-```bash
+#+begin_src bash :results silent
 oc login --token=<token> \
          --server=<cluster> 
          --insecure-skip-tls-verify=true
-```
+#+end_src
 
-### Install openshift gitops operator
 
-We can programatically install the openshift gitops operator on the cluster in a declaritive way by creating a `Subscription` kubernetes custom resource to subscribe a given namespace to the Operator.
+*** Install openshift gitops operator
 
-```bash
+We can programatically install the openshift gitops operator on the cluster in a declaritive way by creating a ~Subscription~ kubernetes custom resource to subscribe a given namespace to the Operator.
+
+#+begin_src bash :results silent
 cat << EOF | oc apply --filename -
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -44,13 +47,14 @@ spec:
     - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
       value: openshift-gitops
 EOF
-```
+#+end_src
 
-### Update openshift gitops instance
 
-Once the operator is installed we can apply our `ArgoCD` custom resource definition. This will be picked up by the operator and an updated argocd instance will be deployed based on the specification we provided.
+*** Update openshift gitops instance
 
-```bash
+Once the operator is installed we can apply our ~ArgoCD~ custom resource definition. This will be picked up by the operator and an updated argocd instance will be deployed based on the specification we provided.
+
+#+begin_src bash :results silent
 cat << EOF | oc apply --filename -
 apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
@@ -77,21 +81,22 @@ spec:
       openShiftOAuth: true
     provider: dex
 EOF
-```
+#+end_src
 
-Once the argocd instance has started we can access the web interface via the `Route` automatically created by the Operator.
+Once the argocd instance has started we can access the web interface via the ~Route~ automatically created by the Operator.
 
-```bash
+#+begin_src bash :results silent
 echo "https://$(oc --namespace openshift-gitops get route openshift-gitops-server --output jsonpath='{.spec.host}')"
-```
+#+end_src
 
-### Create components with gitops
 
-From here, with openshift gitops running in our cluster, all we need to do is apply the argocd `ApplicationSet` custom resource shown below, which points to a git repository containing our remaining manifests.
+*** Create components with gitops
 
-This `ApplicationSet` resource will be picked up by ArgoCD and periodically synchronised to our cluster to create an `Application` for each of our required components.
+From here, with openshift gitops running in our cluster, all we need to do is apply the argocd ~ApplicationSet~ custom resource shown below, which points to a git repository containing our remaining manifests.
 
-```bash
+This ~ApplicationSet~ resource will be picked up by ArgoCD and periodically synchronised to our cluster to create an ~Application~ for each of our required components.
+
+#+begin_src bash :results silent
 cat << EOF | oc apply --filename -
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -125,7 +130,4 @@ spec:
         syncOptions:
           - CreateNamespace=true
 EOF
-```
-
-
-
+#+end_src
