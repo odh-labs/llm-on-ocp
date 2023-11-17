@@ -68,6 +68,7 @@ spec:
   rbac:
     defaultPolicy: role:admin
     scopes: '[groups]'
+  applicationSet: {}
   resourceExclusions: |
     - kinds:
         - TaskRun
